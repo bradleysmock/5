@@ -1,0 +1,64 @@
+
+0.  What is Pneumonoultramicroscopicsilicovolcanoconiosis?
+
+A lung disease and more importantly here, the longest word in English according to the OED, but one the OED calls artificial, meaning it is not in the common (or useful!) lexicon.
+
+1.  According to its man page, what does getrusage do?
+
+It returns resource usage measures for the calling process, its children, or the calling thread, including CPU run time.
+
+2.  Per that same man page, how many members are in a variable of type struct rusage?
+
+16
+
+3.  Why do you think we pass before and after by reference to calculate, even thought we’re not changing their contents?
+
+Passing their values would create copies of before and after, thus increasing memory usage unnecessarily.
+
+4.  Explain as precisely as possible, in a paragraph or more, how main goes about reading words from a file. In other words, convince us that you indeed understand how that function’s for loop works.
+
+Main initially opens the file specified in the last argv with the fopen function in the reading mode. After checking that the file did indeed open, main prepares to read the file by creating some indices for the position in a word, the number of misspelled words, and the total number of words.
+
+The for loop creates the integer c and reads one character at a time from the file until the end of file is reached. Note that the characters from the file replace the usual i-iterator, which is quite a cool way of moving through a file. Each character is checked to make sure it is either alphabetic (in content, not order) or an apostrophe before adding it to word and iterating the index for position in the word, which is used to eliminate words more than LENGTH long. Note that words including numbers are skipped as well.
+
+Once it reaches a character that is not alphanumeric or an apostrophe, main considers the word finished, terminates it with a \0, updates the word index, and then checks its spelling using the check function. (Including benchmarking.) If the word is misspelled, it prints the word. Finally, main resets the position in word counter to zero and proceeds to read the next character (and so on until the end of file is reached and main closes the file).
+
+5.  Why do you think that we used fgetc to read each word’s characters one at a time rather than use fscanf with a format string like “%s” to read whole words at a time? Put another way, what problems might arise by relying on fscanf alone?
+
+Fgetc allows the program to evaluate each individual character regardless of type. The program can then decide what to do with the read data depending on its purpose and needs. Fgetc essentially allows better error-checking because it is less reliant on specific formatting.
+
+Fscanf looks for a specific data type in a line from the file and returns that if found, but it may not find that type or the file data may be too complex or incorrectly formatted for fscanf to recognize all of the data properly. With properly and consistently formed file data, fscan should give reliable results, but may not otherwise. 
+
+6.  Why do you think we declared the parameters for check and load as const?
+
+To ensure that the data was not changed during the function call, and thus prevent any problems with changing input data. It wouldn’t do well to change the text being spell-checked during the spell-check, at least in this circumstance.
+
+7.  What data structure(s) did you use to implement your spell-checker? Be sure not to leave your answer at just “hash table,” “trie,” or the like. Expound on what’s inside each of your “nodes.”
+
+Initially, I used a simple linked list to see how it performed.
+Then, I implemented a hash table based on the first letter of each dictionary entry (using chaining).
+
+I wanted to create a double hash based first on the length of each word and then on their first letters, but I don’t understand the implementation of hash tables well enough yet to do so.
+
+8.  How slow was your code the first time you got it working correctly?
+
+Initially, I decided to implement a straight linked list because I was curious how fast it would be. Not very at all, and I was never patient enough to let it finish checking. (This was never my choice for a final data structure!)
+
+After successfully implementing a hash table (which took awhile), my first runtimes for austinpowers.txt were:
+TIME IN load:         2.29
+TIME IN check:        0.36
+TIME IN size:         0.00
+TIME IN unload:       0.00
+TIME IN TOTAL:        2.66
+
+9. What kinds of changes, if any did you make to your code in order to improve its performance? 
+
+I reviewed the code looking for functions within loops, hoping to move them outside the loop to reduce the number of times they run, if possible. I thought about imitating the timing function used in speller.c to find exactly were I was spending the most time, but I have a ginormous stack of essays and midterms to grade on my desk and haven’t gotten enough sleep in the last few days. So, after metaphorically bashing my head against the wall a few times, I decided to let it go for now. I will definitely be reviewing the staff solution when it is available though to see just how stupid I am.
+
+10. Do you feel that your code has any bottlenecks that you were not able to chip away at?
+
+Like I previously mentioned, I wanted to implement a double hash data structure, but couldn’t wrap my head around its implementation. I don’t know how much this would have improved the speed in actuality, but it seems like it could have a significant enough impact.
+
+Otherwise, something in my load() is taking way too long. I tried to figure out what, but couldn’t with the amount of time I had available.
+
+
